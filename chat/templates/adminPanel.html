@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN PANNEL</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+</head>
+<style>
+   
+    body{
+        color: #10de00;
+        background-color: black;
+        font-family: 'Courier New', Courier, monospace;
+        overflow-y: scroll;
+    }
+
+     /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    
+    input[type="text"]{
+        margin-bottom: 16PX;
+        padding: 0;
+        background-color: rgb(0, 0, 0);
+        color: #10de00;
+        border: hidden;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 16px;
+        width: 80%;
+
+    }
+    input[type="text"]:focus{
+        background-color: black;
+        color: #10de00;
+        outline: none;
+
+    }
+  
+
+
+    
+         
+                
+</style>
+<body>
+
+    <div class="messages">
+        {% for message in messages %}
+
+        <p>{{message}}</p>
+          
+        {% endfor %}
+    </div>
+
+    <form method="post" autoComplete='off' >
+        {% csrf_token %}
+        admin@:~$ <input id="message" type="text" name="message" spellcheck="false" required>
+        <input type="submit" value="send" hidden>
+    </form>
+    <span class="result"></span>
+
+
+
+
+    <script>
+
+        /////////////////// for always focusing on input
+
+        $(document).ready(function(){
+
+        setInterval(function(){
+            var el = document.getElementById("message");
+            el.focus();
+
+        },800);
+    });
+        //////////////////////
+
+    //// if admin pressed tab =>
+    document.getElementById('message').addEventListener('keydown', function(event) {
+    if (event.keyCode == 9) {
+    event.preventDefault();
+    $.ajax({
+            type:'POST',
+            url:'/adminPanel_search',
+            data:{
+                message:$('#message').val(),
+              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            dataType:'json',
+            success: function(data){
+                $(".result").empty();
+
+                let all = "";
+                for (var key in data.messages)
+                    {
+                        all = all + data.messages[key].name+ "  -----  "
+                        var temp ="<p>"+data.messages[key]+"</p>";
+
+                    }
+                    $(".result").append(all);
+
+
+            }
+    
+          });
+
+    
+
+  }
+});
+
+    </script>
+
+</body>
+</html>
