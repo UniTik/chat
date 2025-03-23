@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color:aqua;
+    }
+    .box{
+        margin:100px auto;
+        background-color: rgb(212, 178, 127);
+        border: 1px solid black;
+        box-sizing: border-box;
+        height: 420px;
+        width: 785px;
+        box-shadow: 20px 20px;
+        padding: 5px;
+        
+    }
+    .box > h1{
+        text-align: center;
+    }
+    .box-inside{
+        padding: 7px;
+        margin:30px 20px;
+    }
+    .box-inside input[type="text"] {
+        box-sizing: border-box;
+        width: 100%;
+        
+    }
+    .box-inside input[type="password"] {
+        box-sizing: border-box;
+        width: 100%;
+        
+    }
+    .box-inside input[type="submit"]{
+        background-color: rgb(36, 179, 0);
+        display: block;
+        margin: auto;
+        margin-top: 20px;
+
+        
+    }
+    
+</style>
+<body>
+    <div class="box">
+        <h1>Create/Join Your Room:</h1>
+        <div class="box-inside">
+            <form action="" method="post">
+                {% csrf_token %}
+                <p>Name Of Your Room:</p>
+                <input type="text" name="room-name" placeholder="room..." required>
+                <p>Hash:</p>
+                <input type="text" name="room-hash" placeholder="room..." required>
+                <p>Name Of Your User:</p>
+                <input type="text" name="room-user" placeholder="user..." required>
+                <input type="submit" value="sumbit">
+            </form>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{room.name}}</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+</head>
+<style>
+   
+    body{
+        color: #10de00;
+        background-color: black;
+        font-family: 'Courier New', Courier, monospace;
+        overflow-y: scroll;
+    }
+
+     /* Hide scrollbar for Chrome, Safari and Opera */
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    
+    input[type="text"]{
+        padding: 0;
+        background-color: rgb(0, 0, 0);
+        color: #10de00;
+        border: hidden;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 16px;
+        width: 80%;
+
+    }
+    input[type="text"]:focus{
+        background-color: black;
+        color: #10de00;
+        outline: none;
+
+    }
+  
+
+
+    
+         
+                
+</style>
+<body>
+
+    <div class="messages">
+        {% for message in messages %}
+
+        <p>{{message.user}}:~$ {{message.text}}</p>
+          
+        {% endfor %}
+    </div>
+
+
+
+
+    <script>
+
+        ////// for getting data from server 
+        $(document).ready(function(){
+
+        setInterval(function(){
+            $.ajax({
+                type: 'GET',
+                url : "/GetMessages/{{room.name}}",
+                success: function(response){
+                    $(".messages").empty();
+                    for (var key in response.messages)
+                    {
+                        var temp="<div class='container darker'><b>"+response.messages[key].user+"</b><p>"+response.messages[key].text+"</p></div>";
+                        var temp ="<p>"+response.messages[key].user+":~$ "+response.messages[key].text +"</p>";
+                        $(".messages").append(temp);
+                    }
+                },
+                error: function(response){
+                    alert('An error occured')
+                    window.open("/create","_self")
+                }
+            });
+            
+
+        },800);
+        });
+
+        ////// for make it always focous on input field
+        $(document).ready(function(){
+
+        setInterval(function(){
+        
+                
+            var el = document.getElementById("message");
+            el.focus();
+
+        },800);
+    });
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <form id="post-form" autoComplete='off' >
+        {% csrf_token %}
+        {{user}}:~$ <input id="message" type="text" name="message" spellcheck="false" required>
+        <input type="submit" value="send" hidden>
+    </form>
+
+
+    <script type="text/javascript">
+        /////////// for submiting data to server
+        $(document).on('submit','#post-form',function(e){
+          e.preventDefault(); 
+          if ($('#message').val() == "exit"){
+            window.open("/create","_self")
+          }
+          $.ajax({
+            type:'POST',
+            url:'/submit/{{room.name}}?username={{user}}',
+            data:{
+                message:$('#message').val(),
+              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+    
+          });
+          document.getElementById('message').value = ''
+        });
+      </script>
+</body>
+</html>
